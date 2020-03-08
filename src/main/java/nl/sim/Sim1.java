@@ -7,7 +7,7 @@ public class Sim1 {
     private final static int DAYS = 365;
     private final static int X_PERCENT_DIES = 3;
     private final static PoorMansRandom IS_IN_X_PERCENT_THAT_DIES = new PoorMansRandom(X_PERCENT_DIES);
-    private static final int DUTCH_POPULATION_SIZE = 17_000_000;
+    private static final int DUTCH_POPULATION_SIZE = 125_000_000;
 
     private static Person[] persons = new Person[DUTCH_POPULATION_SIZE];
 
@@ -36,7 +36,7 @@ public class Sim1 {
         int totalAffected;
         for (d=1; d<DAYS; d++) {
             int previousRoundInfected = infected;
-            for (int i=0; i<=previousRoundInfected; i++) { //Person person : persons) {
+            for (int i=0; i<=previousRoundInfected; i++) {
                 if (persons[i].isAlive() && persons[i].isContagious()) {
                     if (persons[i].wasInfectedXDaysAgoFromToday(7, d)) {
                         Person newCase = new Person(d);
@@ -98,13 +98,5 @@ public class Sim1 {
         System.out.printf("Total deaths after %d days: %d\n", d, totalDeaths);
 
     }
-
-//    private static boolean isInXPercentThatSurvives() {
-//        float nextFloat = RANDOM_NUMBER_GENERATOR.nextFloat();
-//        int percentage = Math.round(nextFloat * 100);
-//        return percentage > X_PERCENT_DIES;
-//    }
-
-
 
 }
