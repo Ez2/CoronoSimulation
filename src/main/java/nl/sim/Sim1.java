@@ -7,9 +7,9 @@ public class Sim1 {
     private final static int DAYS = 365;
     private final static int X_PERCENT_DIES = 3;
     private final static PoorMansRandom IS_IN_X_PERCENT_THAT_DIES = new PoorMansRandom(X_PERCENT_DIES);
-    private static final int DUTCH_POPULATION_SIZE = 10_000_000;
+    private static final int DUTCH_POPULATION_SIZE = 17_000_000;
 
-    private static List<Person> persons = new ArrayList<>();
+    private static Person[] persons = new Person[DUTCH_POPULATION_SIZE];
 
     private static int totalDeaths = 0;
     private static int noLongerInfectedTotal = 0;
@@ -26,52 +26,64 @@ public class Sim1 {
 
 
         Person case0 = new Person(0);
-        persons.add(case0);
+        persons[0] = case0;
 
         int d=0;
         List<Person> newlyInfected = new ArrayList<>();
-        List<Person> noLongerInfected = new ArrayList<>();
-        for (; d<DAYS; d++) {
-            for (Person person : persons) {
-                if (person.isAlive()) {
-                    if (person.wasInfectedXDaysAgoFromToday(7, d)) {
+        int newlyInfectedNumber = 0;
+        int noLongerInfected = 0;
+        int infected = 0;
+        int totalAffected;
+        for (d=1; d<DAYS; d++) {
+            int previousRoundInfected = infected;
+            for (int i=0; i<=previousRoundInfected; i++) { //Person person : persons) {
+                if (persons[i].isAlive() && persons[i].isContagious()) {
+                    if (persons[i].wasInfectedXDaysAgoFromToday(7, d)) {
                         Person newCase = new Person(d);
+                        newlyInfectedNumber++;
                         newlyInfected.add(newCase);
-                    } else if (person.wasInfectedXDaysAgoFromToday(7, d)) {
+                    } else if (persons[i].wasInfectedXDaysAgoFromToday(7, d)) {
                         Person newCase = new Person(d);
+                        newlyInfectedNumber++;
                         newlyInfected.add(newCase);
-                    } else if (person.wasInfectedXDaysAgoFromToday(8, d)) {
+                    } else if (persons[i].wasInfectedXDaysAgoFromToday(8, d)) {
                         Person newCase = new Person(d);
+                        newlyInfectedNumber++;
                         newlyInfected.add(newCase);
-                    } else if (person.wasInfectedXDaysAgoFromToday(9, d)) {
+                    } else if (persons[i].wasInfectedXDaysAgoFromToday(9, d)) {
                         Person newCase = new Person(d);
+                        newlyInfectedNumber++;
                         newlyInfected.add(newCase);
-                    } else if (person.wasInfectedXDaysAgoFromToday(30, d)) {
+                    } else if (persons[i].wasInfectedXDaysAgoFromToday(30, d)) {
                         if (IS_IN_X_PERCENT_THAT_DIES.getNext()) {
-                            person.setAlive(false);
+                            persons[i].setAlive(false);
                         }
-                        noLongerInfected.add(person);
+                        persons[i].setContagious(false);
+                        noLongerInfected++;
                     }
                 }
             }
-            System.out.printf("%d\tAdding %d newly infected\n", d, newlyInfected.size());
-            persons.addAll(newlyInfected);
-            System.out.printf("%d\tRemoving %d no longer infected\n\n", d, noLongerInfected.size());
-            noLongerInfectedTotal += noLongerInfected.size();
-            persons.removeAll(noLongerInfected);
+            System.out.printf("%d\tAdding %d newly infected\n", d, newlyInfectedNumber);
+            for (Person p : newlyInfected) {
+                if (infected < DUTCH_POPULATION_SIZE - 1) {
+                    persons[++infected] = p;
+                } else {
+                    break;
+                }
+            }
+            System.out.printf("%d\tRemoving %d no longer infected\n\n", d, noLongerInfected);
+            noLongerInfectedTotal += noLongerInfected;
+            newlyInfectedNumber = 0;
+            noLongerInfected = 0;
             newlyInfected.clear();
-            noLongerInfected.clear();
-            if ((persons.size() + noLongerInfectedTotal) > DUTCH_POPULATION_SIZE) {
-                System.out.printf("Total number infected exceeds Dutch population size %d\n\n", persons.size());
+            totalAffected = infected + noLongerInfectedTotal;
+            if (totalAffected > DUTCH_POPULATION_SIZE) {
+                System.out.printf("Total number infected and no longer infected exceeds Dutch population size %d\n\n", totalAffected);
                 for (Person person : persons) {
                     if (IS_IN_X_PERCENT_THAT_DIES.getNext()) {
                         person.setAlive(false);
                     }
-                    //noLongerInfected.add(person);
                 }
-                //System.out.printf("Removing %d no longer infected (last dutch person got ill)\n", noLongerInfected.size());
-//                persons.removeAll(noLongerInfected);
-//                noLongerInfected.clear();
                 break;
             }
         }
@@ -82,8 +94,8 @@ public class Sim1 {
             if (!person.isAlive()) totalDeaths+=1;
         }
 
-        System.out.printf("\n\nTotal who got sick after %d days: %d\n", d, persons.size());
-        System.out.printf("\n\nTotal deaths after %d days: %d\n", d, totalDeaths);
+        System.out.printf("\nTotal who got sick after %d days: %d\n", d, DUTCH_POPULATION_SIZE);
+        System.out.printf("Total deaths after %d days: %d\n", d, totalDeaths);
 
     }
 

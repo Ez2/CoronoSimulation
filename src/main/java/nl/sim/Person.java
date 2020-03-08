@@ -10,6 +10,7 @@ import lombok.Setter;
 public class Person {
     private final int infectedDay;
     private boolean alive=true;
+    private boolean contagious=true;
 
     public boolean wasInfectedXDaysAgoFromToday(int x, int today) {
         return (today - x) == infectedDay;
