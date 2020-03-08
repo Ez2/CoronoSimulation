@@ -22,6 +22,7 @@ public class CoronaEpidemicSimulation {
         int t;
         List<Person> newlyInfected = new ArrayList<>();
         int noLongerInfected = 0;
+        int deceased = 0;
         int totalAffected = 0;
 
         for (t=1; t<DAYS; t++) {
@@ -44,6 +45,7 @@ public class CoronaEpidemicSimulation {
                     if (persons.get(i).getsIllAfterXDays(30, t)) {
                         if (IS_IN_X_PERCENT_THAT_DIES.getNext()) {
                             persons.get(i).setAlive(false);
+                            deceased++;
                         }
                         persons.get(i).setContagious(false);
                         noLongerInfected++;
@@ -51,7 +53,7 @@ public class CoronaEpidemicSimulation {
                 }
             }
 
-            //System.out.printf("%d\tAdding %d newly infected\n", t, newlyInfected.size());
+            System.out.printf("%d\tAdding %d newly infected\n", t, newlyInfected.size());
             for (Person p : newlyInfected) {
                 if (persons.getLastAddedIndex() < DUTCH_POPULATION_SIZE - 1) {
                     persons.add(p);
@@ -60,7 +62,7 @@ public class CoronaEpidemicSimulation {
                 }
             }
 
-            //System.out.printf("%d\t%d no longer infected\n\n", t, noLongerInfected);
+            System.out.printf("%d\t%d no longer infected (%d deceased) \n\n", t, noLongerInfected, deceased);
             noLongerInfectedTotal += noLongerInfected;
             noLongerInfected = 0;
             newlyInfected.clear();
