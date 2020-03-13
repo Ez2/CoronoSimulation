@@ -22,7 +22,7 @@ public class SimpleList<E> extends AbstractList<E> {
 
     @Override
     public int size() {
-        return arr.length;
+        return index + 1;
     }
 
     @Override

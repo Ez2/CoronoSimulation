@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoronaEpidemicSimulation {
-    private final static int DAYS = 365;
-    private final static int X_PERCENT_DIES = 3;
+    private static final int DAYS = 365;
+    private static final int X_PERCENT_DIES = 3;
     private static final int DUTCH_POPULATION_SIZE = 17_000_000;
 
     private final static SimpleRandom IS_IN_X_PERCENT_THAT_DIES = new SimpleRandom(X_PERCENT_DIES);
@@ -35,10 +35,6 @@ public class CoronaEpidemicSimulation {
                     }
 
                     if (persons.get(i).getsIllAfterXDays(8, t)) {
-                        newlyInfected.add(new Person(t));
-                    }
-
-                    if (persons.get(i).getsIllAfterXDays(9, t)) {
                         newlyInfected.add(new Person(t));
                     }
 
